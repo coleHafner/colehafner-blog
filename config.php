@@ -7,6 +7,7 @@ if (defined('CONFIG_LOADED')
 define('ROOT', dirname(__FILE__) . '/');
 define('LIB_DIR', ROOT . 'libraries/');
 define('LOGS_DIR', ROOT . 'logs/');
+define('CONFIG_DIR', ROOT . 'config/');
 define('DOC_ROOT', ROOT . 'public/');
 define('CONFIG_LOADED', true);
 

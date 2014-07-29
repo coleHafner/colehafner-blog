@@ -2,11 +2,11 @@
 
 class BlogCtrl extends BaseCtrl {
 	public function index() {
-		echo 'this is a blog index...';
+		$this->view = 'blog/index';
 	}
 
 	public function show($f3) {
-		$post_id = $f3->get('PARAMS.post_id');
-		echo 'this is a post id: ' . $post_id;
+		$this->view = 'blog/show';
+		$f3->set('post_id', $f3->get('PARAMS.post_id'));
 	}
 }

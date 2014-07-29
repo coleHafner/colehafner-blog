@@ -1,0 +1,1 @@
+<?= 'this is a post id: ' . $post_id; ?>
