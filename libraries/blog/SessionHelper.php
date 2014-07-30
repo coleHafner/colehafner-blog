@@ -62,6 +62,14 @@ class SessionHelper extends BaseLib {
 	}
 
 	/**
+	 * Removes the user_id and session_hash keys from the SESSION superglobal.
+	 * @return	boolean
+	 */
+	public function clearSession() {
+		return $this->clear(array('session_hash', 'user_id'));
+	}
+
+	/**
 	 * Sets the notifications into the f3 instance
 	 */
 	public function setNotifications() {
@@ -71,11 +79,11 @@ class SessionHelper extends BaseLib {
 
 	/**
 	 * Sets the key and user_id keys in the session superglobal.
-	 * @param	array	$session
+	 * @param	mixed	$session
 	 * @return	SessionHelper
 	 */
-	public function setSession(array $session) {
-		$this->set('key', $session->key);
+	public function setSession($session) {
+		$this->set('session_hash', $session->hash);
 		$this->set('user_id', $session->user_id);
 		return $this;
 	}
@@ -101,11 +109,13 @@ class SessionHelper extends BaseLib {
 	}
 
 	/**
-	 * @return array|null
+	 * @param	Db		$db		for transactions
+	 * @return	array|null
 	 */
-	public function getSession() {
-		$key = $this->get('key');
-		$session = $this->db->getQuery('session')->load(array('key=?', $key));
+	public function getSession(Db $db = null) {
+		$hash = $this->get('session_hash');
+		$db = $db ? $db : $this->db;
+		$session = $db->getQuery('session')->load(array('hash=?', $hash));
 		return !empty($session) ? $session : null;
 	}
 
@@ -138,7 +148,8 @@ class SessionHelper extends BaseLib {
 	 * @return	boolean
 	 */
 	public function isLoggedIn() {
-		return (bool) ($this->getUser() && $this->getSession());
+		$session = $this->getSession();
+		return (bool) ($this->getUser() && $session && !$session->archived);
 	}
 
 	public static function create(Base $f3) {

@@ -16,9 +16,19 @@
 				<li><a href="/">Home</a></li>
 				<li><a href="/about">About</a></li>
 				<li><a href="/blog">Blog</a></li>
+
+				<?php if ($sh->isLoggedIn()) : ?>
+					<li><a href="/posts">Posts</a></li>
+				<?php endif; ?>
+
 			</ul>
 
-			<a class="login" href="/login">Login</a>
+			<?php if ($sh->isLoggedIn()) : ?>
+				<a class="login" href="/do-logout">Logout</a>
+			<?php else : ?>
+				<a class="login" href="/login">Login</a>
+			<?php endif; ?>
+
 		</nav>
 
 		<section class="content">

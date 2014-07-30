@@ -57,20 +57,14 @@ class Auth extends BaseLib {
 			return false;
 		}
 
-		$q = $this->getQuery('user', $this->f3);
+		$q = $this->db->getQuery('user');
 		$hashed = self::doHash($this->password);
+		$user = $q->load(array('username=? AND password=?', $this->username, $hashed));
 
-		$users = $q->find(array(
-			'username' => $this->username,
-			'password' => $hashed
-		));
-
-		if (empty($users)) {
+		if (empty($user)) {
 			$this->_validationErrors[] = 'Invalid username or password.';
 			return false;
 		}
-
-		$user = array_shift($users);
 
 		if ($user->archived !== null) {
 			$this->_validationErrors[] = 'The account for "' . $this->username . '" has been deactivated.';
@@ -87,8 +81,7 @@ class Auth extends BaseLib {
 	 * @throws	RuntimeException
 	 */
 	public function login() {
-
-		$this->db->conn->begin();
+		$this->db->begin();
 
 		try {
 			if (empty($this->user)) {
@@ -96,43 +89,79 @@ class Auth extends BaseLib {
 			}
 
 			//create and cache session
+			$now = strtotime('now');
 			$session = $this->db->getQuery('session');
 			$session->user_id = $this->user->id;
 			$session->user_agent = $this->f3->get('AGENT');
 			$session->ip_address = $this->f3->get('IP');
-			$session->key = $this->generateSessionKey();
+			$session->hash = $this->getUniqueSessionHash();
+			$session->created = $now;
+			$session->updated = $now;
 			$session->save();
 
 			SessionHelper::create($this->f3)->setSession($session);
-			$this->conn->commit();
+			$this->db->commit();
 			return true;
 
 		}catch(Exception $e) {
-			$this->conn->rollback();
+			$this->db->rollback();
 			error_log($e->getMessage());
 			return false;
 		}
 	}
 
 	/**
-	 * Generates a unique session key. Checked against the database.
+	 * Expires the current session and clears session vars from superglobal.
+	 * @param	SessionHelper	$sh
+	 * @return	boolean
+	 */
+	public function logout(SessionHelper $sh = null) {
+
+		$sh = $sh ? $sh : SessionHelper::create($this->f3);
+		$this->db->begin();
+
+		try {
+			$session = $sh->getSession($this->db);
+			$session->archived = strtotime('now');
+			$session->save();
+			$sh->clearSession();
+
+			$this->db->commit();
+			return true;
+
+		}catch(Exception $e) {
+			$this->db->rollback();
+			error_log($e->getmessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Generates a unique session hash. Checked against the database.
 	 * @return	string
 	 */
-	public function generateSessionKey() {
+	public function getUniqueSessionHash() {
 
-		$unique = false;
 		$q = $this->db->getQuery('session');
+		$unique = false;
 
 		while (!$unique) {
-			$key = sha1(mt_rand(uniqid($this->user->id)));
-			$sessions = $q->find(array('key' => $key));
+			$hash = $this->generateSessionHash();
+			$session = $q->load(array('hash=?', $hash));
 
-			if (empty($sessions)) {
+			if (empty($session)) {
 				$unique = true;
 			}
 		}
 
-		return $key;
+		return $hash;
+	}
+
+	/**
+	 * @return	string
+	 */
+	public function generateSessionHash() {
+		return sha1(uniqid($this->user->id));
 	}
 
 	/**
@@ -154,17 +183,16 @@ class Auth extends BaseLib {
 	 * @param	array	$params
 	 * @return	Auth
 	 */
-	public static function create($params = array(), Base $f3) {
+	public static function create(Base $f3, $params = array()) {
 
-		$auth = new Auth;
-		$auth->setF3($f3);
+		$auth = new Auth($f3);
 
 		if (!empty($params['username'])) {
 			$auth->username = $params['username'];
 		}
 
 		if (!empty($params['password'])) {
-			$auth->username = $params['password'];
+			$auth->password = $params['password'];
 		}
 
 		return $auth;

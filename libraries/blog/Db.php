@@ -42,4 +42,28 @@ class Db {
 
 		return $db;
 	}
+
+	/**
+	 * Begins a transaction
+	 * @return	??
+	 */
+	public function begin() {
+		return $this->conn->begin();
+	}
+
+	/**
+	 * Rolls back a transaction
+	 * @return	??
+	 */
+	public function rollback() {
+		return $this->conn->rollback();
+	}
+
+	/**
+	 * Commits a transaction.
+	 * @return	??
+	 */
+	public function commit() {
+		return $this->conn->commit();
+	}
 }

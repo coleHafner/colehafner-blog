@@ -32,7 +32,10 @@ class BaseCtrl {
 	/**
 	 * @param Base	$f3
 	 */
-	public function afterRoute(Base $f3) {
+	public function afterRoute(Base $f3, array $routes, SessionHelper $sh = null) {
+
+		$sh = $sh ? $sh : SessionHelper::create($f3);
+		$f3->set('sh', $sh);
 
 		if (!$f3->get('title')) {
 			$view_split = explode('/', $this->view);

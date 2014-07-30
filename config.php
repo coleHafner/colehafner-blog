@@ -30,4 +30,6 @@ $f3->set('UI', ROOT . 'views/');
 $f3->set('CONN', $conn);
 
 require_once(ROOT . 'libraries/helper_funcs.php');
+session_start();
+
 define('CONFIG_LOADED', true);
