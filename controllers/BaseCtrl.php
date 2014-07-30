@@ -2,6 +2,9 @@
 
 class BaseCtrl {
 
+	/**
+	 * @var	string
+	 */
 	const DEFAULT_LAYOUT = 'layouts/main.php';
 
 	/**
@@ -16,7 +19,20 @@ class BaseCtrl {
 	 */
 	protected $layout = null;
 
-	public function afterRoute($f3) {
+	/**
+	 * Set notifications
+	 * @param	Base	$f3
+	 */
+	public function beforeRoute(Base $f3, array $routes, SessionHelper $sh = null) {
+		$sh = $sh ? $sh : SessionHelper::create($f3);
+		$sh->setNotifications();
+		$sh->clearNotifications();
+	}
+
+	/**
+	 * @param Base	$f3
+	 */
+	public function afterRoute(Base $f3) {
 
 		if (!$f3->get('title')) {
 			$view_split = explode('/', $this->view);

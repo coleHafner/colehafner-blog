@@ -22,10 +22,13 @@
 		</nav>
 
 		<section class="content">
+
 			<h1><?= @$title ?></h1>
+
 			<div class="wrapper">
 				<?php
 				$viewer = View::instance();
+				echo $viewer->raw($viewer->render('layouts/notifications.php'));
 				echo $viewer->raw($viewer->render($content_view));
 				?>
 			</div>

@@ -1,7 +1,13 @@
 <?php
 
 class LoggedInCtrl extends BaseCtrl {
-	public function beforeRoute() {
-		die('user is not logged in. Cannot continue...');
+
+	/**
+	 * @param	Base		$f3
+	 */
+	public function beforeRoute(Base $f3) {
+		if (!SessionHelper::create($f3)->isLoggedIn()) {
+			$f3->route('GET /');
+		}
 	}
 }

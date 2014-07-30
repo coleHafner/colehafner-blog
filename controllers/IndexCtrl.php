@@ -1,26 +1,55 @@
 <?php
 
 class IndexCtrl extends BaseCtrl {
-	public function index($f3) {
+
+	/**
+	 * @param Base $f3
+	 */
+	public function index(Base $f3) {
 		$this->view = 'index/index';
 	}
 
-	public function about($f3) {
+	/**
+	 * @param Base $f3
+	 */
+	public function about(Base $f3) {
 		$f3->set('param', 'foo');
 		$this->view = 'index/about';
 	}
 
-	public function login($f3) {
+	/**
+	 * @param Base $f3
+	 */
+	public function login(Base $f3) {
 		$this->view = 'index/login';
 	}
 
-	public function doLogin($f3) {
-		$conn = $f3->get('CONN');
-		$posts = new \DB\SQL\Mapper($conn, 'post');
-		echo 'posts:';
-		print_r($posts->find());die;
+	/**
+	 * Does login
+	 * @param	Base			$f3
+	 * @param	Auth			$auth
+	 * @param	SessionHelper	$session_helper
+	 */
+	public function doLogin(Base $f3, array $routes, Auth $auth = null, SessionHelper $sh = null) {
 
-		//$auth = new \Auth($user, array('id'=>'user_id', 'pw'=>'password'));
-		//print_r($f3->get('POST'));die;
+		$auth = $auth ? $auth : Auth::create($f3->get('POST'), $f3);
+		$user = $auth->setUser();
+		$errors = array();
+
+		if ($user === false) {
+			$errors = $auth->getValidationErrors();
+		}
+
+		if (!$errors) {
+			$logged_in = $auth->login();
+
+			if (!$logged_in) {
+				$errors = $auth->getValidationErrors();
+			}
+		}
+
+		$sh = $sh ? $sh : SessionHelper::create($f3);
+		$sh->setErrors($errors);
+		$f3->route('GET /posts', array());
 	}
 }
