@@ -19,5 +19,5 @@
 		</div>
 	</div>
 
-	<input type="submit" value="Save" class="btn btn-default" />
+	<input type="submit" value="Save" class="btn btn-default" /> <a href="/posts" class="btn btn-default">Cancel</a>
 </form>

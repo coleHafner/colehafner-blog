@@ -3,6 +3,19 @@
 		<title><?= !empty($title) ? $title . ' - ' : ''; ?>colehafner.com</title>
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/base.css" rel="stylesheet" type="text/css" />
+
+		<script type="text/javascript">
+
+			function ask(goTo) {
+				if(confirm('Are you sure?')) {
+					window.location.href = goTo;
+				}
+
+				return false;
+			}
+
+		</script>
+
 	</head>
 
 	<body>
@@ -35,8 +48,10 @@
 
 		<section class="content container">
 
-			<h1><?= @$title ?></h1>
-			
+			<?php if ($title !== null) : ?>
+				<h1><?= @$title ?></h1>
+			<?php endif; ?>
+
 			<?php
 			$viewer = View::instance();
 			echo $viewer->raw($viewer->render('layouts/notifications.php'));

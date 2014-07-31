@@ -7,6 +7,7 @@ class IndexCtrl extends BaseCtrl {
 	 */
 	public function index() {
 		$this->view = 'index/index';
+		$this->f3->set('title', 'Home');
 	}
 
 	/**
@@ -14,6 +15,7 @@ class IndexCtrl extends BaseCtrl {
 	 */
 	public function about() {
 		$this->view = 'index/about';
+		$this->f3->set('title', 'About');
 	}
 
 	/**
@@ -27,6 +29,8 @@ class IndexCtrl extends BaseCtrl {
 			$this->f3->reroute('/posts');
 		}
 
+		$this->f3->set('title', null);
+		$this->f3->set('notifications', null);
 		$this->view = 'index/login';
 	}
 
@@ -40,7 +44,7 @@ class IndexCtrl extends BaseCtrl {
 		$this->f3->set('title', 'Portfolio');
 	}
 
-	public function doLogout(Auth $auth = null) {
+	public function doLogout(Base $f3, array $routes, Auth $auth = null) {
 		$auth = $auth ? $auth : Auth::create($this->f3, array());
 		$auth->logout();
 		$this->f3->reroute('/');
@@ -51,7 +55,7 @@ class IndexCtrl extends BaseCtrl {
 	 * @param	Base			$this->f3
 	 * @param	Auth			$auth
 	 */
-	public function doLogin(Auth $auth = null) {
+	public function doLogin(Base $f3, array $routes, Auth $auth = null) {
 
 		$auth = $auth ? $auth : Auth::create($this->f3, $this->f3->get('POST'));
 		$user = $auth->setUser();
@@ -69,7 +73,11 @@ class IndexCtrl extends BaseCtrl {
 			}
 		}
 
-		$this->session->setErrors($errors);
+		if ($errors) {
+			$this->session->setErrors($errors);
+			$this->f3->reroute('/login?' . http_build_query(array('username' => $this->f3->get('POST.username'))));
+		}
+
 		$this->f3->reroute('/posts');
 	}
 }

@@ -6,7 +6,7 @@
 		<th style="width:130px;">Updated</th>
 		<th style="width:130px;">Created</th>
 		<th style="width:40px;">Active</th>
-		<th style="width:140px;">&nbsp;</th>
+		<th style="width:265px;">&nbsp;</th>
 	</tr>
 
 	<?php if (empty($records)) : ?>
@@ -29,8 +29,12 @@
 				<a class="btn btn-default" href="/posts/<?= $post->id ?>">Edit</a>
 				<a class="btn btn-default"
 				   href="#"
-				   onclick="if(confirm('Are you sure?')) { window.location.href='/posts/delete/<?= $post->id ?>'; return false;}">
+				   onclick="ask('/posts/delete/<?= $post->id ?>');">
 					Delete
+				</a>
+				<a class="btn btn-default"
+				   href="/blog/<?= str_replace(' ', '-', $post->title) ?>/<?= $post->id ?>">
+					View
 				</a>
 			</td>
 		</tr>

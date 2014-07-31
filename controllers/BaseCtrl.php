@@ -46,23 +46,11 @@ class BaseCtrl {
 		$this->session = $session ? $session : SessionHelper::create($this->f3);
 	}
 
-	public function beforeRoute() {
-		$this->session->setNotifications();
-		$this->session->clearNotifications();
-	}
-
 	public function afterRoute() {
 
-		$this->f3 = $this->session->setNotifications();
+		$this->session->setNotifications();
 		$this->f3->set('sh', $this->session);
 		$this->session->clearNotifications();
-
-		if (!$this->f3->get('title')) {
-			$view_split = explode('/', $this->view);
-			$view_name = str_replace('.php', '', array_pop($view_split));
-			$this->f3->set('title', ucwords(strtolower($view_name)));
-		}
-
 		$viewer = View::instance();
 		$view = strpos($this->view, '.php') !== false ? $this->view : $this->view . '.php';
 		$layout = $this->layout !== null ? $this->layout : self::DEFAULT_LAYOUT;
@@ -71,7 +59,7 @@ class BaseCtrl {
 	}
 
 	public function setRecord(array $request = null) {
-		
+
 		$request = !$request ? $this->f3->get('PARAMS') : $request;
 		$record = $this->db->getQuery($this->table);
 
