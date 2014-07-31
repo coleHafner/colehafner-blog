@@ -46,6 +46,27 @@ class BaseCtrl {
 		$this->session = $session ? $session : SessionHelper::create($this->f3);
 	}
 
+	public function beforeRoute() {
+
+		if ($this->session->isLoggedIn()) {
+
+			//grab session
+			$session = $this->session->getSession();
+
+			//if they have been away for an hour, log them out
+			if (Auth::sessionHasExpired($session)) {
+				$this->session->setErrors(array('You have been logged out due to inactivity.'));
+				$auth = Auth::create($this->f3, array());
+				$auth->logout();
+				$this->f3->reroute('/');
+			}
+
+			//update last page view
+			$session->updated = strtotime('now');
+			$session->save();
+		}
+	}
+
 	public function afterRoute() {
 
 		$this->session->setNotifications();

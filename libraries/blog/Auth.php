@@ -10,6 +10,13 @@ class Auth extends BaseLib {
 	const SALT = '81872698053d866133d7c25.46029213';
 
 	/**
+	 * One hour in seconds. If a user does > 1 hr of inactivity, they will be
+	 * auto logged out.
+	 * @var	int
+	 */
+	const TIMEOUT_IN_SECONDS = 360;
+
+	/**
 	 * @var	string
 	 */
 	public $username = null;
@@ -118,7 +125,6 @@ class Auth extends BaseLib {
 	public function logout(SessionHelper $sh = null) {
 
 		$sh = $sh ? $sh : SessionHelper::create($this->f3);
-		$this->db->begin();
 
 		try {
 			$session = $sh->getSession($this->db);
@@ -130,7 +136,6 @@ class Auth extends BaseLib {
 			return true;
 
 		}catch(Exception $e) {
-			$this->db->rollback();
 			error_log($e->getmessage());
 			return false;
 		}
@@ -213,5 +218,14 @@ class Auth extends BaseLib {
 	public static function doHash($password) {
 		$salted = self::doSalt($password);
 		return md5($salted);
+	}
+
+	public static function sessionHasExpired($session) {
+		$last_page_view = self::getTimeSinceLastPageView($session);
+		return $last_page_view > self::TIMEOUT_IN_SECONDS ? true : false;
+	}
+
+	public static function getTimeSinceLastPageView($session) {
+		return strtotime('now') - $session->updated;
 	}
 }
