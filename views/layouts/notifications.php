@@ -1,22 +1,13 @@
 <?php if (!empty($errors)) : ?>
-	<div class="error">
-		<?php
-		foreach ($errors as $error) :
-			echo $error . "</br>";
-		endforeach;
-		?>
-	</div>
+	<p class="bg-danger notification">
+		<?= implode('<br/>', $errors); ?>
+	</p>
 <?php
 endif;
 
 if (!empty($messages)) : ?>
-	<div class="message">
-		<?php
-		foreach ($messages as $message) :
-			echo $message . "</br>";
-		endforeach;
-		?>
-	</div>
+	<p class="bg-success notification">
+		<?= implode('<br/>', $messages); ?>
+	</p>
 <?php
 endif;
-

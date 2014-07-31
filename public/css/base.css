@@ -8,10 +8,8 @@ a, a:visited {
 }
 
 h1 {
-	margin:0;
-	padding:0;
-	height: 90px;
-	line-height: 90px;
+	margin-top:10px;
+	margin-bottom:10px;
 	width:100%;
 	border-bottom: #dedbdb;
 
@@ -36,6 +34,10 @@ nav ul {
 nav ul li {
 	padding:0;
 	margin:0;
+}
+
+nav ul li:first-child {
+	border-bottom: 1px solid #fff;
 }
 
 nav ul li a {
@@ -72,15 +74,25 @@ nav a.login {
 
 section.content {
 	position:relative;
-	padding-left: 120px;
-}
-
-section.content .wrapper {
-	padding-top: 20px;
+	padding-left: 75px;
 }
 
 .desktop-visible {
 	display:block;
+}
+
+.pad-bottom {
+	padding-bottom: 10px;
+}
+
+form textarea {
+	min-height: 400px;
+}
+
+.notification {
+	border-radius: 3px;
+	padding:10px;
+	text-align: center;
 }
 
 @media screen and (max-width:960px) {

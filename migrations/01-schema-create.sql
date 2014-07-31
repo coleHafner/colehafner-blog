@@ -2,6 +2,7 @@ CREATE TABLE `post` (
 	`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`title` varchar(255) DEFAULT NULL,
 	`body` text DEFAULT NULL,
+	`status` tinyint(1) NULL DEFAULT 2,
 	`created` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',
 	`updated` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',
 	`archived` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',
@@ -11,7 +12,9 @@ CREATE TABLE `post` (
 CREATE TABLE `comment` (
 	`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`post_id` int(10) UNSIGNED NOT NULL,
-	`content` text DEFAULT NULL,
+	`author` varchar(255) NULL DEFAULT NULL,
+	`body` text NULL DEFAULT NULL,
+	`status` tinyint(1) NULL DEFAULT 2,
 	`created` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',
 	`updated` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',
 	`archived` int(10) UNSIGNED DEFAULT NULL COMMENT 'timestamp',

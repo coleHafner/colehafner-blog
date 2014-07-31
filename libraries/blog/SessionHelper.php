@@ -43,13 +43,12 @@ class SessionHelper extends BaseLib {
 
 			if (array_key_exists($key, $this->session)) {
 				unset($this->session[$key]);
-				$session = $this->f3->set('SESSION', $this->session);
 				$found = true;
 			}
 
-			$result != $found;
+			$result |= $found;
 		}
-
+		$this->f3->set('SESSION', $this->session);
 		return $result;
 	}
 
@@ -75,6 +74,7 @@ class SessionHelper extends BaseLib {
 	public function setNotifications() {
 		$this->f3->set('errors', $this->getErrors());
 		$this->f3->set('messages', $this->getMessages());
+		return $this->f3;
 	}
 
 	/**
@@ -104,7 +104,7 @@ class SessionHelper extends BaseLib {
 	 * @return	SessionHelper
 	 */
 	public function setMessages(array $messages) {
-		$this->set('messsages', $messages);
+		$this->set('messages', $messages);
 		return $this;
 	}
 
@@ -132,7 +132,7 @@ class SessionHelper extends BaseLib {
 	 * @return	array|null
 	 */
 	public function getMessages() {
-		return $this->get('messsages');
+		return $this->get('messages');
 	}
 
 	/**

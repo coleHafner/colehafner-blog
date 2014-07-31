@@ -1,16 +1,11 @@
 <?php
 
 class LoggedInCtrl extends BaseCtrl {
+	
+	public function beforeRoute() {
 
-	/**
-	 * @param	Base		$f3
-	 */
-	public function beforeRoute(Base $f3, array $routes, SessionHelper $sh = null) {
-
-		$sh = $sh ? $sh : SessionHelper::create($f3);
-
-		if (!$sh->isLoggedIn()) {
-			$f3->reroute('/login');
+		if (!$this->session->isLoggedIn()) {
+			$this->f3->reroute('/login');
 		}
 	}
 }

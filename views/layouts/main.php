@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title><?= !empty($title) ? $title . ' - ' : ''; ?>colehafner.com</title>
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/base.css" rel="stylesheet" type="text/css" />
 	</head>
 
@@ -15,6 +16,7 @@
 				</li>
 				<li><a href="/">Home</a></li>
 				<li><a href="/about">About</a></li>
+				<li><a href="/portfolio">My Work</a></li>
 				<li><a href="/blog">Blog</a></li>
 
 				<?php if ($sh->isLoggedIn()) : ?>
@@ -31,17 +33,15 @@
 
 		</nav>
 
-		<section class="content">
+		<section class="content container">
 
 			<h1><?= @$title ?></h1>
-
-			<div class="wrapper">
-				<?php
-				$viewer = View::instance();
-				echo $viewer->raw($viewer->render('layouts/notifications.php'));
-				echo $viewer->raw($viewer->render($content_view));
-				?>
-			</div>
+			
+			<?php
+			$viewer = View::instance();
+			echo $viewer->raw($viewer->render('layouts/notifications.php'));
+			echo $viewer->raw($viewer->render($content_view));
+			?>
 		</section>
 	</body>
 </html>

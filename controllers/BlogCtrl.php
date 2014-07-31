@@ -5,8 +5,8 @@ class BlogCtrl extends BaseCtrl {
 		$this->view = 'blog/index';
 	}
 
-	public function show($f3) {
+	public function show() {
 		$this->view = 'blog/show';
-		$f3->set('post_id', $f3->get('PARAMS.post_id'));
+		$f3->set('post_id', $this->f3->get('PARAMS.post_id'));
 	}
 }

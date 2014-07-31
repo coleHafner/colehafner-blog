@@ -3,52 +3,57 @@
 class IndexCtrl extends BaseCtrl {
 
 	/**
-	 * @param Base $f3
+	 * @param Base $this->f3
 	 */
-	public function index(Base $f3) {
+	public function index() {
 		$this->view = 'index/index';
 	}
 
 	/**
-	 * @param Base $f3
+	 * @param Base $this->f3
 	 */
-	public function about(Base $f3) {
-		$f3->set('param', 'foo');
+	public function about() {
 		$this->view = 'index/about';
 	}
 
 	/**
 	 * Allows the user to login if they're not already.
-	 * @param Base			$f3
-	 * @paramarray			$routes
-	 * @param SessionHelper $sh
+	 * @param	Base			$this->f3
+	 * @param	array			$routes
 	 */
-	public function login(Base $f3, array $routes, SessionHelper $sh = null) {
+	public function login() {
 
-		$sh = $sh ? $sh : SessionHelper::create($f3);
-
-		if ($sh->isLoggedIn()) {
-			$f3->reroute('/posts');
+		if ($this->session->isLoggedIn()) {
+			$this->f3->reroute('/posts');
 		}
 
 		$this->view = 'index/login';
 	}
 
-	public function doLogout(Base $f3, array $routes, Auth $auth = null) {
-		$auth = $auth ? $auth : Auth::create($f3, array());
+	/**
+	 * Portfolio time.
+	 * @param	Base			$this->f3
+	 * @param	array			$routes
+	 */
+	public function portfolio() {
+		$this->view = 'index/portfolio';
+		$this->f3->set('title', 'Portfolio');
+	}
+
+	public function doLogout(Auth $auth = null) {
+		$auth = $auth ? $auth : Auth::create($this->f3, array());
 		$auth->logout();
-		$f3->reroute('/');
+		$this->f3->reroute('/');
 	}
 
 	/**
 	 * Does login
-	 * @param	Base			$f3
+	 * @param	Base			$this->f3
 	 * @param	Auth			$auth
-	 * @param	SessionHelper	$session_helper
 	 */
-	public function doLogin(Base $f3, array $routes, Auth $auth = null, SessionHelper $sh = null) {
+	public function doLogin(Auth $auth = null) {
 
-		$auth = $auth ? $auth : Auth::create($f3, $f3->get('POST'));
+		$auth = $auth ? $auth : Auth::create($this->f3, $this->f3->get('POST'));
 		$user = $auth->setUser();
 		$errors = array();
 
@@ -64,8 +69,7 @@ class IndexCtrl extends BaseCtrl {
 			}
 		}
 
-		$sh = $sh ? $sh : SessionHelper::create($f3);
-		$sh->setErrors($errors);
-		$f3->reroute('/posts');
+		$this->session->setErrors($errors);
+		$this->f3->reroute('/posts');
 	}
 }
