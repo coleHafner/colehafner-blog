@@ -1,11 +1,15 @@
 <?php if ($session->isLoggedIn()) : ?>
-	<div class="corner-btn clearfix">
+	<div class="btn-group corner-btn">
+
+		<a href="/posts/<?= $post->id ?>" class="btn btn-default">
+			<span class="glyphicon glyphicon-pencil"></span>
+		</a>
+
 		<a href="#"
 		   onclick="ask('/posts/delete/<?= $post->id ?>')"
-		   class="btn btn-default pull-right margin-left">
-			Delete
+		   class="btn btn-default">
+			<span class="glyphicon glyphicon-trash"></span>
 		</a>
-		<a href="/posts/<?= $post->id ?>" class="btn btn-default pull-right">Edit</a>
 	</div>
 <?php endif; ?>
 
