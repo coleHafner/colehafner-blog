@@ -41,9 +41,16 @@ class BaseCtrl {
 	 * @param	Db				$db
 	 */
 	public function __construct(Base $f3, SessionHelper $session = null, Db $db = null) {
+
+		//for controllers
 		$this->f3 = $f3;
 		$this->db = $db ? $db : Db::create($this->f3);
 		$this->session = $session ? $session : SessionHelper::create($this->f3);
+
+		//for views
+		$this->set('db', $this->db);
+		$this->set('session', $this->session);
+		$this->set('f3', $this->f3);
 	}
 
 	public function beforeRoute() {
@@ -70,37 +77,67 @@ class BaseCtrl {
 	public function afterRoute() {
 
 		$this->session->setNotifications();
-		$this->f3->set('sh', $this->session);
+		$this->set('sh', $this->session);
 		$this->session->clearNotifications();
 		$viewer = View::instance();
 		$view = strpos($this->view, '.php') !== false ? $this->view : $this->view . '.php';
 		$layout = $this->layout !== null ? $this->layout : self::DEFAULT_LAYOUT;
-		$this->f3->set('content_view', $view);
+		$this->set('content_view', $view);
 		echo $viewer->render($layout);
 	}
 
+	public function set($key, $val) {
+		$this->f3->set($key, $val);
+	}
+
+	public function get($key) {
+		return $this->f3->get($key);
+	}
+
+	public function setTitle($title) {
+		$this->set('title', $title);
+	}
+
+	public function getTitle() {
+		return $this->get('title');
+	}
+
 	public function setRecord(array $request = null) {
-
-		$request = !$request ? $this->f3->get('PARAMS') : $request;
+		$request = !$request ? $this->get('PARAMS') : $request;
 		$record = $this->db->getQuery($this->table);
+		$new = empty($request[$this->pk]);
 
-		if (!empty($request[$this->pk])) {
+		if (!$new) {
 			$record = $record->load(array($this->pk . '=?', $request[$this->pk]));
 		}
 
-		$this->f3->set('record', $record);
+		$this->set('record', $record);
 
-		if (!$this->f3->get('record')) {
+		if (!$new && !$this->getRecord()) {
 			$this->session->setErrors(array('Post #' . $request[$this->pk] . ' does not exist.'));
 			$this->goHome();
 		}
 	}
 
-	public function setRecords() {
-		$records = $this->db->getQuery($this->table)
-			->find(null, array('order' => 'id DESC'));
+	/**
+	 * @return	Object
+	 */
+	public function getRecord() {
+		return $this->get('record');
+	}
 
-		$this->f3->set('records', $records);
+	public function setRecords($filters = array()) {
+		$records = $this->db->getQuery($this->table)
+			->find($filters, array('order' => 'id DESC'));
+
+		$this->set('records', $records);
+	}
+
+	/**
+	 * @return	array
+	 */
+	public function getRecords() {
+		return $this->get('records');
 	}
 
 	public function routeTo($action = null, $params = array()) {
@@ -111,5 +148,68 @@ class BaseCtrl {
 
 	public function goHome() {
 		$this->routeTo();
+	}
+
+	//------------------------------------------------------
+	public function index() {
+		$this->setTitle( ucfirst($this->home));
+		$this->view = $this->home . '/index';
+		$this->setRecords();
+	}
+
+	public function add() {
+		$this->setTitle('Add ' . ucfirst($this->table));
+		$this->view = $this->home . '/edit';
+		$this->setRecord();
+		$this->getRecord()->copyFrom('GET');
+	}
+
+	public function edit() {
+		$this->setTitle('Edit ' . ucfirst($this->table));
+		$this->view = $this->home . '/edit';
+		$this->setRecord();
+		$this->getRecord()->copyFrom('GET');
+
+	}
+
+	public function delete() {
+
+		try {
+			$this->setRecord();
+			$record = $this->getRecord();
+			$record->erase();
+			$this->session->setMessages(array('Post deleted!'));
+
+		}catch(Exception $e) {
+			$this->session->setErrors(array($e->getMessage()));
+		}
+
+		$this->goHome();
+	}
+
+	public function save() {
+
+		$this->setRecord($this->get('POST'));
+		$this->getRecord()->copyfrom('POST');
+		$action = !$this->getRecord()->id ? 'add' : 'edit';
+
+		try {
+			if ($this->validate()) {
+				$now = strtotime('now');
+				$this->getRecord()->updated = $now;
+
+				if (!$this->getRecord()->id) {
+					$this->getRecord()->created = $now;
+				}
+
+				$this->getRecord()->save();
+				$this->session->setMessages(array('Saved successfully!'));
+				$this->goHome();
+			}
+		}catch(Exception $e) {
+			$sh->setErrors(array($e->getMessage()));
+		}
+
+		$this->routeTo($action, $this->get('POST'));
 	}
 }

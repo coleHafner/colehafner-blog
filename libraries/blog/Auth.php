@@ -14,7 +14,7 @@ class Auth extends BaseLib {
 	 * auto logged out.
 	 * @var	int
 	 */
-	const TIMEOUT_IN_SECONDS = 360;
+	const TIMEOUT_IN_SECONDS = 3600;
 
 	/**
 	 * @var	string

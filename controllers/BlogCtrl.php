@@ -2,15 +2,17 @@
 
 class BlogCtrl extends BaseCtrl {
 	public function index() {
-		$this->f3->set('title', 'Blog');
 		$this->view = 'blog/index';
+		$this->setTitle('Blog');
+		$posts = $this->db->getQuery('post');
+		$posts->comment_count = 'SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id';
+		$this->set('posts', $posts->find());
 	}
 
 	public function show() {
 		$this->view = 'blog/show';
-		$post = $this->db->getQuery('post')->load($this->f3->get('PARAMS.id'));
-		$this->f3->set('post', $post);
-		$this->f3->set('title', $post->title);
-		$this->f3->set('session', $this->session);
+		$post = $this->db->getQuery('post')->load(array('id=?', $this->get('PARAMS.id')));
+		$this->set('post', $post);
+		$this->setTitle($post->title);
 	}
 }

@@ -10,7 +10,7 @@
 		<th>Body</th>
 		<th style="max-width:100px;">Created</th>
 		<th style="max-width:40px;">Active</th>
-		<th style="width:130px;">&nbsp;</th>
+		<th style="width:170px;">&nbsp;</th>
 	</tr>
 
 	<?php if (empty($records)) : ?>
@@ -26,17 +26,11 @@
 			<td><?= $post->id; ?></td>
 			<td><?= $post->title; ?></td>
 			<td>
-				<span class="hidden-sm hidden-xs">
-					<?php echo substr($post->body, 0, 110); echo strlen($post->body) >= 110 ? '...' : ''; ?>
-				</span>
-
-				<span class="visible-sm">
-					<?php echo substr($post->body, 0, 50); echo strlen($post->body) >= 50 ? '...' : ''; ?>
-				</span>
-
-				<span class="visible-xs">
-					<?php echo substr($post->body, 0, 10); echo strlen($post->body) >= 10 ? '...' : ''; ?>
-				</span>
+				<?php
+				$viewer = View::instance();
+				$f3->set('text', $post->body);
+				echo $viewer->esc($viewer->render('layouts/responsive-text.php'));
+				?>
 			</td>
 			<td><?= date('m/d/y', $post->created); ?></td>
 			<td><?= $post->archived ? 'No' : 'Yes'; ?></td>
@@ -53,8 +47,13 @@
 					</a>
 
 					<a class="btn btn-default"
-					   href="/blog/<?= str_replace(' ', '-', $post->title) ?>/<?= $post->id ?>">
+					   href="/blog/<?= get_slug($post) ?>">
 						<span class="glyphicon glyphicon-eye-open">&nbsp;</span>
+					</a>
+
+					<a class="btn btn-default"
+					   href="/comments/post/<?= $post->id ?>">
+						<span class="glyphicon glyphicon-comment">&nbsp;</span>
 					</a>
 				</div>
 

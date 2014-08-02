@@ -4,9 +4,14 @@
 	<head>
 		<title><?= !empty($title) ? $title . ' - ' : ''; ?>colehafner.com</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-		<link href="/css/base.css" rel="stylesheet" type="text/css" />
+		<link href="/vendor/cleditor/jquery.cleditor.css" rel="stylesheet">
+		<link href="/css/base.css" rel="stylesheet" />
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="/vendor/cleditor/jquery.cleditor.js"></script>
 
 		<script type="text/javascript">
 
@@ -102,6 +107,7 @@
 
 						<?php if ($sh->isLoggedIn()) : ?>
 							<li><a href="/posts">Posts</a></li>
+							<li><a href="/comments">Comments</a></li>
 						<?php endif; ?>
 
 					</ul>

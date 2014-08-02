@@ -60,17 +60,18 @@
 	width: 90px;
 	background: #ff0000;
 	height: 100%;
-	box-shadow: 3px 0 10px rgba(0,0,0,.5);
 }
 
 #desktop-nav ul {
-	position:absolute;
+	position:fixed;
 	left:0;
-	width:100%;
+	width:90px;
 	list-style: none;
 	padding:0;
 	margin:0;
 	background: #ff0000;
+	box-shadow: 3px 0 10px rgba(0,0,0,.5);
+	height:100%;
 }
 
 #desktop-nav ul li {
@@ -142,6 +143,10 @@ form textarea {
 	margin-left: 10px;
 }
 
+.margin-right {
+	margin-right: 10px;
+}
+
 .margin-top-none {
 	padding-top:0;
 	margin-top:0;
@@ -167,4 +172,33 @@ bootstrap overrides
 .btn-group-small .btn {
 	min-width: 0;
 	width: 38px;
+}
+
+.jumbotron {
+	position:relative;
+	padding-top:60px;
+}
+
+.jumbotron .glyphicon {
+	width:30px;
+}
+
+.jumbotron div.header {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	font-size: 22px;
+	border-bottom:1px solid #dedbdb;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:10px;
+}
+
+.jumbotron div.header .comment-count {
+	position:absolute;
+	top:2px;
+	left:8px;
+	font-size:11px;
+	color:#fff;
 }
